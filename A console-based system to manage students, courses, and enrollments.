@@ -1,0 +1,131 @@
+import java.util.*;
+
+class Student {
+    private int id;
+    private String name;
+
+    public Student(int id, String name) { this.id = id; this.name = name; }
+    public int getId() { return id; }
+    public String getName() { return name; }
+    public String toString() { return "Student[ID=" + id + ", Name=" + name + "]"; }
+}
+
+class Course {
+    private int id;
+    private String title;
+
+    public Course(int id, String title) { this.id = id; this.title = title; }
+    public int getId() { return id; }
+    public String getTitle() { return title; }
+    public String toString() { return "Course[ID=" + id + ", Title=" + title + "]"; }
+}
+
+class Enrollment {
+    private Student student;
+    private Course course;
+
+    public Enrollment(Student student, Course course) { this.student = student; this.course = course; }
+    public String toString() { return student.getName() + " enrolled in " + course.getTitle(); }
+}
+
+public class StudentManagementSystem {
+    private static Map<Integer, Student> students = new HashMap<>();
+    private static Map<Integer, Course> courses = new HashMap<>();
+    private static List<Enrollment> enrollments = new ArrayList<>();
+    private static Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        int choice;
+        do {
+            System.out.println("\n===== Student Management System =====");
+            System.out.println("1. Add Student");
+            System.out.println("2. Add Course");
+            System.out.println("3. Enroll Student in Course");
+            System.out.println("4. List Students");
+            System.out.println("5. List Courses");
+            System.out.println("6. List Enrollments");
+            System.out.println("0. Exit");
+            System.out.print("Enter your choice: ");
+
+            while (!scanner.hasNextInt()) {
+                System.out.print("Invalid input. Enter a number: ");
+                scanner.next();
+            }
+
+            choice = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (choice) {
+                case 1 -> addStudent();
+                case 2 -> addCourse();
+                case 3 -> enrollStudent();
+                case 4 -> listStudents();
+                case 5 -> listCourses();
+                case 6 -> listEnrollments();
+                case 0 -> System.out.println("Exiting system...");
+                default -> System.out.println("Invalid choice. Try again.");
+            }
+        } while (choice != 0);
+    }
+
+    private static void addStudent() {
+        System.out.print("Enter Student ID: ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+        System.out.print("Enter Student Name: ");
+        String name = scanner.nextLine();
+        if (students.containsKey(id)) System.out.println("Student ID already exists!");
+        else {
+            students.put(id, new Student(id, name));
+            System.out.println("Student added successfully.");
+        }
+    }
+
+    private static void addCourse() {
+        System.out.print("Enter Course ID: ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+        System.out.print("Enter Course Title: ");
+        String title = scanner.nextLine();
+        if (courses.containsKey(id)) System.out.println("Course ID already exists!");
+        else {
+            courses.put(id, new Course(id, title));
+            System.out.println("Course added successfully.");
+        }
+    }
+
+    private static void enrollStudent() {
+        System.out.print("Enter Student ID: ");
+        int sid = scanner.nextInt();
+        System.out.print("Enter Course ID: ");
+        int cid = scanner.nextInt();
+
+        Student student = students.get(sid);
+        Course course = courses.get(cid);
+
+        if (student != null && course != null) {
+            enrollments.add(new Enrollment(student, course));
+            System.out.println("Enrollment successful.");
+        } else {
+            System.out.println("Invalid Student ID or Course ID.");
+        }
+    }
+
+    private static void listStudents() {
+        System.out.println("\n--- Students ---");
+        if (students.isEmpty()) System.out.println("No students found.");
+        else students.values().forEach(System.out::println);
+    }
+
+    private static void listCourses() {
+        System.out.println("\n--- Courses ---");
+        if (courses.isEmpty()) System.out.println("No courses found.");
+        else courses.values().forEach(System.out::println);
+    }
+
+    private static void listEnrollments() {
+        System.out.println("\n--- Enrollments ---");
+        if (enrollments.isEmpty()) System.out.println("No enrollments found.");
+        else enrollments.forEach(System.out::println);
+    }
+}
